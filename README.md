@@ -137,18 +137,24 @@ The questions asked:
 ### To Be Implemented 🚧
 
 - ⬜ User is asigned a role when account is created
+- ◽If assigning admin or support password is requierd??
     - ◽ if no role assigned, automaticly become 'General'
     - ◽Let admin assign roles to other users 
 - ⬜ Admin users can access all other accounts info
 - ⬜ User can register a help ticket 
 - ⬜ People with sertin roles can see tickets 
-- ⬜ Make a form for registering help tickets
+- ✅ Make a form for registering help tickets
+    - ✅Basic info like title and info
+    - ◽Date
+    - ◽Importance  
+    - ◽connect to user who submits them through the session
+    - ◽Let user see ticket
+    - ◽ let user edit ticket   
 - ⬜ Make a overview where suport can see all tickets
 - ⬜ Let support asign tickets to self
 - ⬜ Let admin asign tickets to self and support
 - ⬜ Allow tickets to be cloesd 
 - ⬜ Let users delete account
-- ⬜ 
 - ⬜ 
    #### Important ⚠️
 - ⬜ 

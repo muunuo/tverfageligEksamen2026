@@ -136,12 +136,13 @@ app.post('/login_', async (req, res) => { //users woth an account can log in
 
 //user can create a help ticket
 app.post('/helpTicket_', async (req, res) => { 
-    const {title_, info_} = req.body; // retrieves what user puts in form 
+    const {title_, info_, deadline_} = req.body; // retrieves what user puts in form 
+    const user_id = req.session.sessionUser_.userId_;
 
     try {
         const [statement_] = await pool.execute( //cheking multiple rows, so use []. (Query = get, execute = do)
-        'INSERT INTO db_helpticket (db_title, db_description) VALUES (?, ?)', 
-            [title_, info_] // Mariadb uses [varible] insted of run/get to send querys to/from database 
+        'INSERT INTO db_helpticket (db_title, db_description, db_importance, db_user_id) VALUES (?, ?, ?, ?)', 
+            [title_, info_, deadline_, user_id] // Mariadb uses [varible] insted of run/get to send querys to/from database 
         );
 
         res.status(201).json({ message: "New ticket added", id: statement_.insertId }); //lets user know they where added sucsesfully
