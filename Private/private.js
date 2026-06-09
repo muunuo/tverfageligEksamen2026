@@ -40,7 +40,7 @@ async function getUserData_() {
 
 // Admin: henter all informasjon om alle brukere
 async function getAdminData_() {
-    const response = await fetch('/api/admin/users');
+    const response = await fetch('/api/admin/users_');
     if (response.ok) {
         const data = await response.json();
         const adminSection_ = document.getElementById('adminSection_');
@@ -50,10 +50,10 @@ async function getAdminData_() {
         const rows_ = data.users_.map(d => `
             <tr>
                 <td>${d.db_user_id}</td>
+                <td>${d.db_username}</td>
                 <td>${d.db_firstname}</td>
                 <td>${d.db_lastname}</td>
-                <td>${d.db_password}</td>
-                <td>${d.db_role}</td>
+                <td>${d.db_role_id}</td>
             </tr>
         `).join('');
 
@@ -79,10 +79,10 @@ async function getSupportData() {
         const supportData_ = document.getElementById('supportData_');
         supportSection_.style.display = 'block';
 
-        const rows_ = data.users_.map(b => `
+        const rows_ = data.users_.map(d => `
             <tr>
-                <td>${b.db_firstname}</td>
-                <td>${b.db_lastname}</td>
+                <td>${d.db_firstname}</td>
+                <td>${d.db_lastname}</td>
             </tr>
         `).join('');
 

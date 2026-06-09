@@ -160,11 +160,12 @@ app.post('/helpTicket_', async (req, res) => {
 //Middleware som er mer generell, som kan brukes for alle mulige roller - og som er lett å utvide i fremtiden
 function requireRole_(...roles) {
     return (req, res, next) => {
-        if (!req.session.sessionUser_) { // Dersom brukeren ikke har en session (er logga inn)
+        if (!req.session.sessionUser_) {
             return res.redirect("/");
         }
         const currentRole = String(req.session.sessionUser_.role_);
-        if (!roles.includes(currentRole)) { // Dersom brukeren sin rolle ikke er i listen over roller som har tilgang
+        const allowedRoles = roles.map(String);
+        if (!allowedRoles.includes(currentRole)) {
             return res.status(403).json({ message: "No access" });
         }
         next();
@@ -197,8 +198,10 @@ app.get("/api/myPage_", requireLogin_, async (req, res) => {
 });
 
 //Ny måte: Admin-Frute: henter all informasjon om alle brukere
-app.get("/api/admin/users_", requireRole_(1), async (req, res) => {
-    const [rows_] = await pool.execute('SELECT db_user_id, db_firstname, db_lastname, db_password, db_role FROM sb_user');
+app.get("/api/admin/users_", requireRole_('1'), async (req, res) => {
+    const [rows_] = await pool.execute(
+        'SELECT db_user_id, db_username, db_firstname, db_lastname, db_role_id FROM db_user'
+    );
     res.json({ users_: rows_ });
 });
 
