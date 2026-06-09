@@ -37,9 +37,9 @@ CREATE TABLE IF NOT EXISTS db_role (
 
     CREATE TABLE IF NOT EXISTS db_user (
     db_user_id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    db_username TEXT,
+    db_username TEXT UNIQUE,
     db_lastname TEXT,
-    db_firstname TEXT UNIQUE,
+    db_firstname TEXT,
     db_password TEXT,
     db_email TEXT,
     db_role_id INTEGER,

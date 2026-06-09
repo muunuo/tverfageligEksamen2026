@@ -39,7 +39,7 @@ async function getUserData_() {
             getSupportData();
         
         } else {
-            alert('Can not get user data');
+            // alert('Can not get user data');
         }
 
     if (data.user_.role_ === '1' || data.user_.role_ === '3') {

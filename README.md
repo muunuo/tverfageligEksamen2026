@@ -41,64 +41,43 @@ Planing started on paiper, before being made into a proper model using draw.io.
 
 ![databasen laget i draw.io. Viser 4 tabeller som forklares videre under](bilder_md/draw_io_database.png)
 
-Later made into a actual database with Maria.db.
+### db_role
 
-### 🧑‍💻 User (bruker)
+| Column     | Type    | Description     |
+|------------|---------|-----------------|
+| db_role_id  | INTEGER | Primary key,autoincrement|
+| db_name     | TEXT | -               |
+
+### 🧑‍💻 db_user 
 
 Stores information about users.
 
 | Column      | Type    | Description     |
 |-------------|---------|-----------------|
-| bruker_id   | INTEGER | Primary key, autoincrement |
-| brukernavn  | TEXT    | must be uniqe   |
-| passord     | TEXT    | cannot be null  |
-| kallenavn   | TEXT    | cannot be null  |
-| beskrivelse | TEXT    | -               |
-| bilde       | BLOB    | -               |
+| db_user_id   | INTEGER | Primary key, autoincrement |
+| db_username  | TEXT    | must be uniqe   |
+| db_password     | TEXT    | cannot be null  |
+| db_firstname   | TEXT    | cannot be null  |
+| db_lastname | TEXT    | cannot be null         |
+| db_email | TEXT    | (not used)         |
+| db_rolle_id       |   INTEGER    | FOREIGN KEY |
 
-### 🧑‍💻 Show (serie)
+db_rolle_id connects to db_role, db_role_id
 
-Stores information about shows.
+### helpticket
+
+Stores information about the helpdesk tickets sent by users.
 
 | Column       | Type    | Description     |
 |--------------|---------|-----------------|
-| serie_id     | INTEGER | Primary key, autoincrement|
-| navn         | TEXT    | -               |
-| beskrivelse  | TEXT    | -               |
-| utgivelses_arr| INTEGER| -               |
-| andmeldelse  | INTEGER | -               |  
-| bilde        | BLOB    | -               |
+| db_ticket_id     | INTEGER | Primary key, autoincrement|
+| db_title         | TEXT    | required           |
+| db_discription  | TEXT    | required               |
+| db_date| INTEGER| (not used)              |
+| db_importance  | TEXT | -               |  
+| db_user_id    | INTEGER    | FOREIGN KEY |
 
-### 🧑‍💻 Recommendations (anbefaling)
-
-Stores information about what shows have been recommended to what users.
-
-| Column        | Type       | Description     |
-|---------------|---------   |-----------------|
-| anbefaling_id | INTEGER    | Primary key,autoincrement|
-| kommentar     | TEXT       | -               |
-| er_godtatt    | INTEGER    | NULL            |
-| serie_id      | INTEGER    | FOREIGN KEY     |
-| mottaker_id   | TEXT       | FOREIGN KEY     |
-| sender_id     | INTEGER    | FOREIGN KEY     |
-
-showID connects to show idS
-senderID connects to user id
-reciverID connects to user id
-
-### 🧑‍💻 showStatus (serieStatus)
-
-Shows the "status" of a show. Either "to watch", "have watched", "watching".
-
-| Column     | Type    | Description     |
-|------------|---------|-----------------|
-| status_id  | INTEGER | Primary key,autoincrement|
-| status     | INTEGER | -               |
-| bruker_id  | INTEGER | FOREIGN KEY     |
-| serie_id   | INTEGER | FOREIGN KEY     |
-
-idS connects to show idS
-idB connects to user id
+db_user_id connects to db_user, db_user_id
 
 ### Plan 
 The rest of the plan is based of a few other reposetorys. Mainly the following:
