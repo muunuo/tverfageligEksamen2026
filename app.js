@@ -169,13 +169,7 @@ app.post('/helpTicket_', async (req, res) => {
 //     };
 // }
 
-// // Eksempel på rute som viser deg index.html fra public-mappen (alltid tilgjengelig)
-// app.get("/", (req, res) => {
-//     res.sendFile(path.join(__dirname, "public", "index.html"));
-// });
 
-// // Beskyttet rute som krever innlogging, her gjør vi alle filer fra beskyttet-mappen tilgjengelig
-// app.use('/beskyttet', kreverInnlogging, express.static(path.join(__dirname, 'beskyttet')));
 
 // // Beskyttet rute som viser alle data om brukeren (kun egne data)
 // app.get("/api/minside", kreverInnlogging, (req, res) => {
@@ -184,8 +178,8 @@ app.post('/helpTicket_', async (req, res) => {
 //     res.json({ bruker });
 // });
 
-// // Ny måte: Admin-rute: henter all informasjon om alle brukere
-// app.get("/api/admin/brukere", kreverRolle('admin'), (req, res) => {
+// Ny måte: Admin-rute: henter all informasjon om alle brukere
+// app.get("/api/admin/users", kreverRolle('admin'), (req, res) => {
 //     const brukere = db.prepare("SELECT id, fornavn, etternavn, passord, rolle FROM person").all();
 //     res.json({ brukere });
 // });
@@ -196,64 +190,13 @@ app.post('/helpTicket_', async (req, res) => {
 //     res.json({ brukere });
 // });
 
+// Rout to log off 
+app.post("/api/logout", (req, res) => {
+    req.session.destroy();
+    res.json({ message: "You are now loged out" });
+});
 
-// // Rute for å legge til ein ny person
-// app.post("/api/leggtilperson", async (req, res) => {
-//     const { fornavn, etternavn, passord } = req.body;
 
-//     // Her bør du legge til validering av input-data, og sjekke om brukeren allerede finnes
-//     const eksisterendeBruker = db.prepare("SELECT * FROM person WHERE fornavn = ?").get(fornavn);
-//     if (eksisterendeBruker) {
-//         return res.status(400).json({ message: "Bruker med dette fornavnet finnes allerede" });
-//     }
-
-//     try {
-//         // Hash passordet med bcrypt
-//         const saltRounds = 10;
-//         const hashPassord = await bcrypt.hash(passord, saltRounds);
-
-//         const rolle = req.body.rolle && ['admin', 'support', 'vanlig'].includes(req.body.rolle)
-//             ? req.body.rolle
-//             : 'vanlig';
-
-//         const stmt = db.prepare("INSERT INTO person (fornavn, etternavn, passord, rolle) VALUES (?, ?, ?, ?)");
-//         const info = stmt.run(fornavn, etternavn, hashPassord, rolle);
-
-//         res.status(201).json({ message: "Ny bruker opprettet", id: info.lastInsertRowid });
-//     } catch (error) {
-//         console.error("Feil ved oppretting av bruker:", error);
-//         res.status(500).json({ message: "Noe gikk galt på serveren" });
-//     }
-// });
-
-// // Rute for å logge inn
-// app.post("/api/login", async (req, res) => {
-//     const { fornavn, passord } = req.body;
-
-//     const bruker = db.prepare("SELECT * FROM person WHERE fornavn = ?").get(fornavn);
-//     if (!bruker) {
-//         return res.status(401).json({ message: "Feil fornavn eller passord" });
-//     }
-
-//     const passordErGyldig = await bcrypt.compare(passord, bruker.passord);
-//     if (!passordErGyldig) {
-//         return res.status(401).json({ message: "Feil fornavn eller passord" });
-//     }
-
-//     // Lagre brukerdata i session
-//     req.session.bruker = { id: bruker.id, fornavn: bruker.fornavn, rolle: bruker.rolle };
-//     res.json({ message: "Innlogging vellykket" });
-// });
-
-// // Rute for å logge ut
-// app.post("/api/logout", (req, res) => {
-//     req.session.destroy();
-//     res.json({ message: "Du er logget ut" });
-// });
-
-// code by me
-
-// Starter serveren
 app.listen(port, () => { //starts up the server and says where to find it
     console.log(`Website running at http://localhost:${port}`);
 });
