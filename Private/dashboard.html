@@ -23,6 +23,34 @@
         <button type="submit">send ticket</button>
     </form>
 
-    <button id="logoutButton">Logg ut</button>
+
+
+    <h1>Secrets!</h1>
+    <main>
+        <section id="userInfo_">
+            <h2>Min side</h2>
+            <div id="userData_">
+                <!-- Brukerdata vil bli lastet her -->
+            </div>
+        </section>
+
+        <!-- Vises kun for support-brukere -->
+        <section id="supportSection_" style="display:none;">
+            <h2>Support – all user names</h2>
+            <div id="supportData_">
+                <!-- Støttedata vil bli lastet her -->
+            </div>
+        </section>
+
+        <!-- Vises kun for admin-brukere -->
+        <section id="adminSection_" style="display:none;">
+            <h2>Admin – fullstendig brukeroversikt</h2>
+            <div id="adminData_">
+                <!-- Admin-data vil bli lastet her -->
+            </div>
+        </section>
+    </main>
+
+    <button id="logoutButton">Log out</button>
 </body>
 </html>

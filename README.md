@@ -137,6 +137,8 @@ The questions asked:
     - ✅ Importance  
     - ✅ connect to user who submits them through the session
 - ✅ Roles can be assignd by user 
+- ✅ Log out works 
+- ✅ User can see own info
 
 ### To Be Implemented 🚧
 
@@ -156,14 +158,6 @@ The questions asked:
 - ⬜ Let admin asign tickets to self and support
 - ⬜ Allow tickets to be cloesd 
 - ⬜ Let users delete account
-- ⬜ 
-   #### Important ⚠️
-- ⬜ 
-- ⬜ 
-  - ◽ 
-
-   #### Fix 🛠
-- ⚠️
 
 #### Might be wrong
 This section will have changes made in verible names, and other thing like that that can cause the code to malfunction.

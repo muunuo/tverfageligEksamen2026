@@ -129,7 +129,8 @@ app.post('/login_', async (req, res) => { //users woth an account can log in
     username_ : user_.db_username,
     firstname_ : user_.db_firstname,
     lastname_ : user_.db_lastname,
-    userId_ : user_.db_user_id
+    userId_ : user_.db_user_id,
+    role_ : String(user_.db_role_id),
 };
     return res.redirect(`/Private/dashboard.html`); //send user to dashboard.html when logd in
 });
@@ -156,43 +157,60 @@ app.post('/helpTicket_', async (req, res) => {
     Code under is Jo bjørner's 
 ---------- */
 
-// Middleware som er mer generell, som kan brukes for alle mulige roller - og som er lett å utvide i fremtiden
-// function kreverRolle(...roller) {
-//     return (req, res, next) => {
-//         if (!req.session.bruker) { // Dersom brukeren ikke har en session (er logga inn)
-//             return res.redirect("/");
-//         }
-//         if (!roller.includes(req.session.bruker.rolle)) { // Dersom brukeren sin rolle ikke er i listen over roller som har tilgang
-//             return res.status(403).json({ message: "Ingen tilgang" });
-//         }
-//         next();
-//     };
-// }
+//Middleware som er mer generell, som kan brukes for alle mulige roller - og som er lett å utvide i fremtiden
+function requireRole_(...roles) {
+    return (req, res, next) => {
+        if (!req.session.sessionUser_) { // Dersom brukeren ikke har en session (er logga inn)
+            return res.redirect("/");
+        }
+        const currentRole = String(req.session.sessionUser_.role_);
+        if (!roles.includes(currentRole)) { // Dersom brukeren sin rolle ikke er i listen over roller som har tilgang
+            return res.status(403).json({ message: "No access" });
+        }
+        next();
+    };
+}
 
 
+// Beskyttet rute som viser alle data om brukeren (kun egne data)
+app.get("/api/myPage_", requireLogin_, async (req, res) => {
+    const userId_ = req.session.sessionUser_.userId_;
+    const [rows_] = await pool.query(
+        'SELECT db_user_id, db_firstname, db_lastname , db_password, db_role_id FROM db_user WHERE db_user_id = ?', 
+        [userId_]
+    );
 
-// // Beskyttet rute som viser alle data om brukeren (kun egne data)
-// app.get("/api/minside", kreverInnlogging, (req, res) => {
-//     const brukerId = req.session.bruker.id;
-//     const bruker = db.prepare("SELECT id, fornavn, etternavn, passord, rolle FROM person WHERE id = ?").get(brukerId);
-//     res.json({ bruker });
-// });
+    if (rows_.length === 0) {
+        // === means strict equality operator
+        return res.status(404).json({ message: "User not found" });
+    }
 
-// Ny måte: Admin-rute: henter all informasjon om alle brukere
-// app.get("/api/admin/users", kreverRolle('admin'), (req, res) => {
-//     const brukere = db.prepare("SELECT id, fornavn, etternavn, passord, rolle FROM person").all();
-//     res.json({ brukere });
-// });
+    const row = rows_[0];
+    const user_ = {
+        userId_: row.db_user_id,
+        firstname_: row.db_firstname,
+        lastname_: row.db_lastname,
+        password_: row.db_password,
+        role_: String(row.db_role_id),
+    };
+    res.json({ user_ });
+});
 
-// // Ny måte: Support-rute: henter kun fornavn og etternavn for alle brukere
-// app.get("/api/support/brukere", kreverRolle('support', 'admin'), (req, res) => { // NB: Se at både support og admin har tilgang til denne ruten!
-//     const brukere = db.prepare("SELECT fornavn, etternavn FROM person").all();
-//     res.json({ brukere });
-// });
+//Ny måte: Admin-Frute: henter all informasjon om alle brukere
+app.get("/api/admin/users_", requireRole_(1), async (req, res) => {
+    const [rows_] = await pool.execute('SELECT db_user_id, db_firstname, db_lastname, db_password, db_role FROM sb_user');
+    res.json({ users_: rows_ });
+});
+
+// Ny måte: Support-rute: henter kun fornavn og etternavn for alle brukere
+app.get("/api/support/users_", requireRole_(3, 1), async (req, res) => { // NB: Se at både support og admin har tilgang til denne ruten!
+    const [rows_] = await pool.execute('SELECT db_firstname, db_lastname FROM db_user');
+    res.json({ users_: rows_});
+});
 
 // Rout to log off 
 app.post("/api/logout", (req, res) => {
-    req.session.destroy();
+    req.session.destroy(); //without a session, user isn't allowed on /Private
     res.json({ message: "You are now loged out" });
 });
 
