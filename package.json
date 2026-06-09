@@ -1,0 +1,28 @@
+{
+  "name": "tverfageligeksamen2026",
+  "version": "1.0.0",
+  "description": "This is a project created as part of my last eksam in High school whitch covers the subjects of IT-development, Operations and user support.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muunuo/tverfageligEksamen2026.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/muunuo/tverfageligEksamen2026/issues"
+  },
+  "homepage": "https://github.com/muunuo/tverfageligEksamen2026#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "mysql2": "^3.22.5",
+    "session": "^0.1.0"
+  }
+}
