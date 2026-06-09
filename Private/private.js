@@ -16,7 +16,12 @@ logoutButton.addEventListener('click', async () => {
 //  Show personal data on "my page"
 async function getUserData_() {
     const response = await fetch('/api/myPage_');
-    if (response.ok) {
+    if (!response.ok) {
+        alert('Can not get user data');
+        return;
+    }
+
+    
         const data = await response.json();
         const userDataDiv_ = document.getElementById('userData_');
         userDataDiv_.innerHTML = `
@@ -32,10 +37,14 @@ async function getUserData_() {
             getAdminData_();
         } else if (data.user_.role_ === '3') {
             getSupportData();
+        
+        } else {
+            alert('Can not get user data');
         }
-    } else {
-        alert('Can not get user data');
-    }
+
+    if (data.user_.role_ === '1' || data.user_.role_ === '3') {
+            getTicketData();
+        } 
 }
 
 // Admin: henter all informasjon om alle brukere
@@ -70,7 +79,6 @@ async function getAdminData_() {
     }
 }
 
-// Support: henter kun fornavn og etternavn for alle brukere
 async function getSupportData() {
     const response = await fetch('/api/support/users_');
     if (response.ok) {
@@ -94,8 +102,37 @@ async function getSupportData() {
                 <tbody>${rows_}</tbody>
             </table>
         `;
-    } else {
+        } else {
         alert('Could not get support-data');
+    }
+}
+
+// Support: henter kun fornavn og etternavn for alle brukere
+async function getTicketData() {
+    const response = await fetch('/api/ticket/users_');
+    if (response.ok) {
+        const data = await response.json();
+        const ticketSection_ = document.getElementById('ticketSection_');
+        const ticketData_ = document.getElementById('ticketData_');
+        ticketSection_.style.display = 'block';
+
+        const rows = data.users.map(d => `
+            <tr>
+                <td>${d.db_title}</td>
+                <td>${d.db_description}</td>
+                <td>${d.db_importance}</td>
+            </tr>
+        `).join('');
+        ticketData_.innerHTML = `
+            <table border="1">
+                <thead>
+                    <tr><th>Title</th><th>Description</th><th>Importance</th></tr>
+                </thead>
+                <tbody>${rows}</tbody>
+            </table>
+        `;
+    } else {
+        alert('Could not get ticket-data');
     }
 }
 

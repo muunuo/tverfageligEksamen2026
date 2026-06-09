@@ -5,17 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="private.js" defer></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <p>hei</p>
+    <h1>Helpdesk</h1>
 
     <form method="POST" action="/helpTicket_">
         <label for="title_">Title</label>
         <input placeholder="Title" required type="text" name="title_" id="title_">
-        <label for="info_">What is the problem?</label>
+        <label for="info_">Describe the problem</label>
         <input placeholder="Describe the problem you need help with!" required type="text" name="info_" id="info_">
+        <label for="info_">How big of a priority is this?</label>
         <select name="deadline_" id="deadline_">
-            <option value="important">Important</option>
+            <option value="important">High</option>
             <option value="semi">Semi Importent</option>
             <option value="normal">Normal</option>
             <option value="low">Low</option>
@@ -43,10 +45,18 @@
         </section>
 
         <!-- Vises kun for admin-brukere -->
+         
         <section id="adminSection_" style="display:none;">
             <h2>Admin – fullstendig brukeroversikt</h2>
             <div id="adminData_">
                 <!-- Admin-data vil bli lastet her -->
+            </div>
+        </section>
+
+        <section id="ticketSection_" style="display:none;">
+            <h2>Support – all user names</h2>
+            <div id="ticketData_">
+                <!-- Støttedata vil bli lastet her -->
             </div>
         </section>
     </main>

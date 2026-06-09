@@ -118,12 +118,13 @@ I mainly use two forms of AI. The built-in Copilot that i use mostly for coding 
 
 The questions asked:
 
-| Question     | Context    | Answer from Claud     |
+| Question     | Context    | Answer     |
 |------------|---------|-----------------|
 |Should i translate database names|  | Yes |
 | Is there a naming scheme i can use to make database names more clear | afreid of not knowing whats a function and whats from the db | yes. db_name or NAME |
-|  |  |  |
-|    |  |  |
+| Needed help getting the role system up and working | A lot of back and forth, but got there in the end. | Helped |
+| Asked Claud for some CSS do to time crunch   |  | Clause made CSS |
+| Got some help with figuring out why some different code snippets didnt work | always from copilot| Helped |
 
 ## Features💡
 ### Implemented ✅
@@ -139,21 +140,21 @@ The questions asked:
 - ✅ Roles can be assignd by user 
 - ✅ Log out works 
 - ✅ User can see own info
+- ✅ Admin users can access all other accounts info
+- ✅ User can register a help ticket 
+- ✅ Make a overview where suport can see all tickets
+- ✅ People with sertin roles can see tickets 
 
 ### To Be Implemented 🚧
 
 - ⬜ User is asigned a role when account is created
-- ◽If assigning admin or support password is requierd??
+    - ◽If assigning admin or support password is requierd??
     - ◽ if no role assigned, automaticly become 'General'
     - ◽Let admin assign roles to other users 
-- ⬜ Admin users can access all other accounts info
-- ⬜ User can register a help ticket 
-- ⬜ People with sertin roles can see tickets 
 - ⬜ Ticket 
     - ◽ Let user see ticket
     - ◽ let user edit ticket   
     - ◽ let user delete ticket 
-- ⬜ Make a overview where suport can see all tickets
 - ⬜ Let support asign tickets to self
 - ⬜ Let admin asign tickets to self and support
 - ⬜ Allow tickets to be cloesd 

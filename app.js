@@ -211,6 +211,14 @@ app.get("/api/support/users_", requireRole_(3, 1), async (req, res) => { // NB: 
     res.json({ users_: rows_});
 });
 
+app.get("/api/ticket/users_", requireRole_('3', '1'), async (req, res) => { // NB: Se at både support og admin har tilgang til denne ruten!
+    const [rows] = await pool.execute(
+        'SELECT db_title, db_description, db_importance FROM db_helpticket'
+    );
+    res.json({ users: rows});
+});
+
+
 // Rout to log off 
 app.post("/api/logout", (req, res) => {
     req.session.destroy(); //without a session, user isn't allowed on /Private
