@@ -131,8 +131,12 @@ The questions asked:
 - ✅ Users password gets bcrypted 
 - ✅ Only one user can have a certin username
 - ✅ User can log into existing account
-- ✅
-- ✅
+- ✅ Make a form for registering help tickets
+    - ✅ Basic info like title and info
+    - ❌ Date
+    - ✅ Importance  
+    - ✅ connect to user who submits them through the session
+- ✅ Roles can be assignd by user 
 
 ### To Be Implemented 🚧
 
@@ -143,13 +147,10 @@ The questions asked:
 - ⬜ Admin users can access all other accounts info
 - ⬜ User can register a help ticket 
 - ⬜ People with sertin roles can see tickets 
-- ✅ Make a form for registering help tickets
-    - ✅Basic info like title and info
-    - ◽Date
-    - ◽Importance  
-    - ◽connect to user who submits them through the session
-    - ◽Let user see ticket
+- ⬜ Ticket 
+    - ◽ Let user see ticket
     - ◽ let user edit ticket   
+    - ◽ let user delete ticket 
 - ⬜ Make a overview where suport can see all tickets
 - ⬜ Let support asign tickets to self
 - ⬜ Let admin asign tickets to self and support

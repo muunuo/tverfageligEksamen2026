@@ -91,7 +91,7 @@ app.use((req, res, next) => {
 });
 
 app.post('/createUser_', async (req, res) => { //adds new users to database
-    const { username_, password_, firstname_, lastname_ } = req.body; //get the username, password and nickname from the form in index.html
+    const { username_, password_, firstname_, lastname_, role_} = req.body; //get the username, password and nickname from the form in index.html
 
     const [rows_] = await pool.query('SELECT * FROM db_user WHERE db_username = ?', [username_]); //rows_ checks if the username is taken or free. the [] is because it is checking multiple rows. (maria.db exlusiv)
     if (rows_.length > 0) { //check if username is taken (if more then 0)
@@ -102,8 +102,8 @@ app.post('/createUser_', async (req, res) => { //adds new users to database
         const saltRounds_ = 10; //inrypts the password using saltrounds
         const hashPassword_ = await bcrypt.hash(password_, saltRounds_); //the hashPassword is the password that gets saved to the db
         const [stmt_] = await pool.execute( //cheking multiple rows, so use []. (Query = get, execute = do)
-        'INSERT INTO db_user (db_username, db_password, db_firstname, db_lastname) VALUES (?, ?, ?, ?)', 
-            [username_, hashPassword_, firstname_, lastname_] // Mariadb uses [varible] insted of run/get to send querys to/from database 
+        'INSERT INTO db_user (db_username, db_password, db_firstname, db_lastname, db_role_id) VALUES (?, ?, ?, ?, ?)', 
+            [username_, hashPassword_, firstname_, lastname_, role_] // Mariadb uses [varible] insted of run/get to send querys to/from database 
         );
         res.status(201).json({ message: "New user added", id: stmt_.insertId }); //lets user know they where added sucsesfully
     } catch (error){ //if an error happens
