@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Make account</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <form id="logIn" method="POST" action="/createUser_">
+    <!-- Create new user -->
+    <form id="createUser_" method="POST" action="/createUser_">
         <h3>Create Account</h3>
         <label for="username_">Username</label>
         <input placeholder="user" required type="text" name="username_" id="username_">
@@ -17,6 +19,7 @@
         <input placeholder="Firstname" required type="text" name="firstname_" id="firstname_">
         <label for="lastname_">Lastname</label>
         <input placeholder="Lastname" required type="text" name="lastname_" id="lastname_">
+        <label for="role">Role</label>
         <select name="role_" id="role_">
             <option value="1">Admin</option>
             <option value="2">General</option>
@@ -25,6 +28,7 @@
         <button type="submit">Create Account</button>
     </form>
 
+    <!-- log in to existing user -->
     <form method="POST" action="/login_" id="logInForm">
         <h3>Log In</h3>
         <label for="inUsername_">Username</label>

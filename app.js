@@ -10,7 +10,7 @@ const pool = mysql.createPool({ // used do to maria.db being used
     port: 3306,
     user: 'root',
     password: 'root', //later: put in an env file for safty
-    database: 'oybitenas',
+    database: 'oybitenas', //change based on what database is used
     connectionLimit: 5,
     multipleStatements: true,
 });
@@ -69,6 +69,12 @@ app.use(
     })
 );
 
+/*
+-------------------------------
+    Requirements 
+-------------------------------
+*/
+
 function requireLogin_(req, res, next) { //user must be logd in and have a session
     if (!req.session.sessionUser_) {//if user dosn't have a session
         return res.redirect("/"); //redirect to /index.html
@@ -84,14 +90,22 @@ app.get('/', (req, res) => {
 });
 
 //Middleware for logging all incoming and outgoing requests (for debugging)
-//Should log: timestamp, http-method, body and url and what user
+//Too log timestamp, http-method, body and url and what user
 app.use((req, res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - Body: ${JSON.stringify(req.body)} - user: ${req.session.sessionUser_ ? req.session.sessionUser_.db_firstname : "Nothing"}`);
+    console.log(
+        `[${new Date().toISOString()}] ${req.method} ${req.url} - Body: ${JSON.stringify(req.body)} - user: ${req.session.sessionUser_ ? req.session.sessionUser_.db_firstname : "Nothing"}`
+    );
     next();
 });
 
+/*
+-------------------------------
+    USER 
+-------------------------------
+*/
+
 app.post('/createUser_', async (req, res) => { //adds new users to database
-    const { username_, password_, firstname_, lastname_, role_} = req.body; //get the username, password and nickname from the form in index.html
+    const { username_, password_, firstname_, lastname_, role_} = req.body; //get the username, password, first and lastname from the html-form in index.html
 
     const [rows_] = await pool.query('SELECT * FROM db_user WHERE db_username = ?', [username_]); //rows_ checks if the username is taken or free. the [] is because it is checking multiple rows. (maria.db exlusiv)
     if (rows_.length > 0) { //check if username is taken (if more then 0)
@@ -113,7 +127,7 @@ app.post('/createUser_', async (req, res) => { //adds new users to database
 });
 
 
-app.post('/login_', async (req, res) => { //users woth an account can log in
+app.post('/login_', async (req, res) => { //users with an account can log in
     const {inUsername_, inPassword_} = req.body; // retrieves what user puts in form 
 
     const [users_] = await pool.query('SELECT * FROM db_user WHERE db_username = ?', [inUsername_]); // checks if there is a matching username
@@ -130,15 +144,22 @@ app.post('/login_', async (req, res) => { //users woth an account can log in
     firstname_ : user_.db_firstname,
     lastname_ : user_.db_lastname,
     userId_ : user_.db_user_id,
-    role_ : String(user_.db_role_id),
+    role_ : String(user_.db_role_id), //String turns 3 into '3'. Helps normalizing the role value.
 };
     return res.redirect(`/Private/dashboard.html`); //send user to dashboard.html when logd in
 });
 
+
+/*
+-------------------------------
+    TICKET 
+-------------------------------
+*/
+
 //user can create a help ticket
 app.post('/helpTicket_', async (req, res) => { 
-    const {title_, info_, deadline_} = req.body; // retrieves what user puts in form 
-    const user_id = req.session.sessionUser_.userId_;
+    const {title_, info_, deadline_} = req.body; // retrieves what user puts in html-form 
+    const user_id = req.session.sessionUser_.userId_; //gets the id from session
 
     try {
         const [statement_] = await pool.execute( //cheking multiple rows, so use []. (Query = get, execute = do)
@@ -153,19 +174,21 @@ app.post('/helpTicket_', async (req, res) => {
     }
 });
 
-/* ----------
-    Code under is Jo bjørner's 
----------- */
+/*
+-------------------------------
+    ROLES 
+-------------------------------
+*/
 
-//Middleware som er mer generell, som kan brukes for alle mulige roller - og som er lett å utvide i fremtiden
-function requireRole_(...roles) {
-    return (req, res, next) => {
-        if (!req.session.sessionUser_) {
+//Middleware used later to say what role is needed to access different parts 
+function requireRole_(...roles) { //... allows any number of inputs to be accepted by making them an array
+    return (req, res, next) => { 
+        if (!req.session.sessionUser_) { //if there is no session, you get thrown back to the login site 
             return res.redirect("/");
         }
-        const currentRole = String(req.session.sessionUser_.role_);
-        const allowedRoles = roles.map(String);
-        if (!allowedRoles.includes(currentRole)) {
+        const currentRole = String(req.session.sessionUser_.role_); //String normalizes the role id
+        const allowedRoles = roles.map(String); // all imputs in roles gets stringefied using map (map can apply a transform function to every element)
+        if (!allowedRoles.includes(currentRole)) { //if the current role and allowd role dont match, give a no access massage
             return res.status(403).json({ message: "No access" });
         }
         next();
@@ -197,34 +220,50 @@ app.get("/api/myPage_", requireLogin_, async (req, res) => {
     res.json({ user_ });
 });
 
-//Ny måte: Admin-Frute: henter all informasjon om alle brukere
-app.get("/api/admin/users_", requireRole_('1'), async (req, res) => {
+//Admine-rout: get all information on every user
+app.get("/api/admin/users_", requireRole_('1'), async (req, res) => { //only admin have access here
     const [rows_] = await pool.execute(
         'SELECT db_user_id, db_username, db_firstname, db_lastname, db_role_id FROM db_user'
     );
     res.json({ users_: rows_ });
 });
 
-// Ny måte: Support-rute: henter kun fornavn og etternavn for alle brukere
-app.get("/api/support/users_", requireRole_(3, 1), async (req, res) => { // NB: Se at både support og admin har tilgang til denne ruten!
+// Support-rout: get first and last name on every user
+app.get("/api/support/users_", requireRole_('3', '1'), async (req, res) => { // both support and admin have access here
     const [rows_] = await pool.execute('SELECT db_firstname, db_lastname FROM db_user');
     res.json({ users_: rows_});
 });
-
-app.get("/api/ticket/users_", requireRole_('3', '1'), async (req, res) => { // NB: Se at både support og admin har tilgang til denne ruten!
+// Ticket-rout: Get all ticket info and show to admin/support
+// had to be seperated from support-rout do to only one working at a time
+app.get("/api/ticket/users_", requireRole_('3', '1'), async (req, res) => { // both support and admin have access here
     const [rows] = await pool.execute(
-        'SELECT db_title, db_description, db_importance FROM db_helpticket'
+        'SELECT db_ticket_id, db_title, db_description, db_importance FROM db_helpticket'
     );
     res.json({ users: rows});
 });
 
 
 // Rout to log off 
-app.post("/api/logout", (req, res) => {
+app.post("/api/logout_", (req, res) => {
     req.session.destroy(); //without a session, user isn't allowed on /Private
     res.json({ message: "You are now loged out" });
 });
 
+app.delete('/api/deleteTicket_/:id', requireLogin_, async (req, res) => {
+    const target_id_ = req.params.id;
+    try {
+        await pool.execute('DELETE FROM db_helpticket WHERE db_ticket_id = ?', [target_id_]);
+        res.json({ message: "ticket deleted" });
+    } catch (error_) {
+        console.error(error_);
+        res.status(500).json({ message: "Failed to delete ticket" });
+    }
+});
+
+// app.post("/api/delete_", (req, res) => {
+//     req.session.destroy(); //without a session, user isn't allowed on /Private
+//     res.json({ message: "You are now loged out" });
+// });
 
 app.listen(port, () => { //starts up the server and says where to find it
     console.log(`Website running at http://localhost:${port}`);

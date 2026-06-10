@@ -1,38 +1,39 @@
 const logoutButton = document.getElementById('logoutButton');
-
-logoutButton.addEventListener('click', async () => {
-    const response = await fetch('/api/logout', {
+//when logout button is used, user is sent to startpage
+logoutButton.addEventListener('click', async () => { 
+    const response = await fetch('/api/logout_', { //the button beind pressed gets sent to app.js
         method: 'POST'
     });
     if (response.ok) {
-        window.location.href = '/';
+        window.location.href = '/'; //send user to startpage
     }
     else {
-        alert('Noe gikk galt ved utlogging');
+        alert('Somthing went wrong. Please try again later');
     }
 });
 
 
-//  Show personal data on "my page"
+//  Show users personal data on "my page"
 async function getUserData_() {
-    const response = await fetch('/api/myPage_');
-    if (!response.ok) {
+    const response = await fetch('/api/myPage_'); //waits for respons from api/myPage_
+    if (!response.ok) { //! = not
         alert('Can not get user data');
         return;
     }
 
     
-        const data = await response.json();
-        const userDataDiv_ = document.getElementById('userData_');
+        const data = await response.json(); //data is the response from /api/myPage_
+        const userDataDiv_ = document.getElementById('userData_'); //could also use create...
+
         userDataDiv_.innerHTML = `
             <p>ID: ${data.user_.userId_}</p>
             <p>Firstname: ${data.user_.firstname_}</p>
             <p>Lastname: ${data.user_.lastname_}</p>
             <p>Password: ${data.user_.password_}</p>
             <p>Role: ${data.user_.role_}</p>
-        `;
+        `; //whats going to go inside the div 
 
-        // Vis ekstra seksjoner basert på rolle
+        // Show other sections based on roles
         if (data.user_.role_ === '1') {
             getAdminData_();
         } else if (data.user_.role_ === '3') {
@@ -40,22 +41,24 @@ async function getUserData_() {
         
         } else {
             // alert('Can not get user data');
+            //alert happens to every normal user. So now nothing happens
         }
-
+        //shows tickets if user has right role
     if (data.user_.role_ === '1' || data.user_.role_ === '3') {
             getTicketData();
         } 
 }
 
-// Admin: henter all informasjon om alle brukere
+// Admin: get info about all users
 async function getAdminData_() {
-    const response = await fetch('/api/admin/users_');
+    const response = await fetch('/api/admin/users_'); //waits for respons from api/admin/users_
     if (response.ok) {
         const data = await response.json();
-        const adminSection_ = document.getElementById('adminSection_');
+        const adminSection_ = document.getElementById('adminSection_'); //gets the sections made in html
         const adminData_ = document.getElementById('adminData_');
-        adminSection_.style.display = 'block';
+        adminSection_.style.display = 'block'; //displays the section if user is admin
         
+        //map can apply a transform function to every element
         const rows_ = data.users_.map(d => `
             <tr>
                 <td>${d.db_user_id}</td>
@@ -79,6 +82,7 @@ async function getAdminData_() {
     }
 }
 
+// Support: get firt- and lastname of all users
 async function getSupportData() {
     const response = await fetch('/api/support/users_');
     if (response.ok) {
@@ -103,37 +107,57 @@ async function getSupportData() {
             </table>
         `;
         } else {
-        alert('Could not get support-data');
+        // alert('Could not get support-data');
     }
 }
 
-// Support: henter kun fornavn og etternavn for alle brukere
+// Ticket: gets all tickets 
 async function getTicketData() {
     const response = await fetch('/api/ticket/users_');
-    if (response.ok) {
-        const data = await response.json();
+    if (!response.ok) {
+        alert('Could not get ticket-data');
+        return;
+    } 
+
+            const data = await response.json();
         const ticketSection_ = document.getElementById('ticketSection_');
         const ticketData_ = document.getElementById('ticketData_');
         ticketSection_.style.display = 'block';
 
         const rows = data.users.map(d => `
             <tr>
+                <td>${d.db_ticket_id}</td>
                 <td>${d.db_title}</td>
                 <td>${d.db_description}</td>
                 <td>${d.db_importance}</td>
+                <td><button class="deleteTicketBtn" data-id="${d.db_ticket_id}">Delete</button></td>
             </tr>
         `).join('');
         ticketData_.innerHTML = `
             <table border="1">
                 <thead>
-                    <tr><th>Title</th><th>Description</th><th>Importance</th></tr>
+                    <tr><th>ID</th><th>Title</th><th>Description</th><th>Importance</th><th>Delete</th></tr>
                 </thead>
                 <tbody>${rows}</tbody>
             </table>
         `;
-    } else {
-        alert('Could not get ticket-data');
-    }
+// Attach listeners to each delete button
+document.querySelectorAll('.deleteTicketBtn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+        const id = btn.dataset.id;
+        if (!confirm('Delete ticket ' + id + '?')) return;
+        const res = await fetch('/api/deleteTicket_/' + encodeURIComponent(id), {
+            method: 'DELETE'
+        });
+        if (res.ok) {
+            // refresh ticket list after successful delete
+            getTicketData();
+        } else {
+            const text = await res.text();
+            alert('Failed to delete ticket: ' + (text || res.status));
+        }
+    });
+});
 }
 
 getUserData_();

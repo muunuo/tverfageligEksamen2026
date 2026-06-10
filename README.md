@@ -123,6 +123,13 @@ The questions asked:
 - ✅ User can register a help ticket 
 - ✅ Make a overview where suport can see all tickets
 - ✅ People with sertin roles can see tickets 
+- ✅ Comment on code: 
+    - ✅ app.js
+    - ✅ dashbpard.html
+    - ✅private.js
+    - ❌style.css
+    - ✅index.html
+- ✅ Allow tickets to be deleted by admin/support
 
 ### To Be Implemented 🚧
 
@@ -131,13 +138,14 @@ The questions asked:
     - ◽ if no role assigned, automaticly become 'General'
     - ◽Let admin assign roles to other users 
 - ⬜ Ticket 
-    - ◽ Let user see ticket
+    - ⚠️ Let user see their own ticket
     - ◽ let user edit ticket   
-    - ◽ let user delete ticket 
+    - ⚠️ let user delete ticket 
 - ⬜ Let support asign tickets to self
 - ⬜ Let admin asign tickets to self and support
-- ⬜ Allow tickets to be cloesd 
-- ⬜ Let users delete account
+- ⚠️ Allow tickets to be cloesd
+- ⚠️ Let users delete account
+- ⬜ Different avdelinger can only see tickets menat for them
 
 #### Might be wrong
 This section will have changes made in verible names, and other thing like that that can cause the code to malfunction.

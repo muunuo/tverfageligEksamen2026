@@ -196,6 +196,20 @@ textarea:focus {
     font-size: 14px;
 }
 
+#logoutButton, .deleteTicketBtn {
+    padding: 8px 18px;
+    border: 1px solid #984949;
+    border-radius: 8px;
+    background: #984949;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#logoutButton:hover, .deleteTicketBtn:hover {
+    background: rgb(88, 44, 44);
+}
+
 .btn:hover {
     background: #f0f0ee;
 }

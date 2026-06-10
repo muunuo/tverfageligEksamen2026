@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- User can register help ticket -->
     <h1>Helpdesk</h1>
-
     <form method="POST" action="/helpTicket_">
         <label for="title_">Title</label>
         <input placeholder="Title" required type="text" name="title_" id="title_">
@@ -21,45 +21,45 @@
             <option value="normal">Normal</option>
             <option value="low">Low</option>
         </select>
+        <br>
         <button type="submit">send ticket</button>
+        <!-- all info is sent to database -->
     </form>
-
-
-
-    <h1>Secrets!</h1>
+<br><br>
     <main>
+        <!-- User can see their own info -->
         <section id="userInfo_">
             <h2>Min side</h2>
             <div id="userData_">
                 <!-- Brukerdata vil bli lastet her -->
             </div>
         </section>
-
-        <!-- Vises kun for support-brukere -->
+<br><br>
+        <!-- Only support-users can see this -->
         <section id="supportSection_" style="display:none;">
-            <h2>Support – all user names</h2>
+            <h2>Support - all user names</h2>
             <div id="supportData_">
-                <!-- Støttedata vil bli lastet her -->
+                <!-- support-data is shown here -->
             </div>
         </section>
 
-        <!-- Vises kun for admin-brukere -->
-         
+<br><br>
+        <!-- Only admin-users can see this -->
         <section id="adminSection_" style="display:none;">
-            <h2>Admin – fullstendig brukeroversikt</h2>
+            <h2>Admin - overview of all users</h2>
             <div id="adminData_">
-                <!-- Admin-data vil bli lastet her -->
+                <!-- Admin-data is shown here  -->
             </div>
         </section>
-
+<br><br>
         <section id="ticketSection_" style="display:none;">
-            <h2>Support – all user names</h2>
+            <h2>Tickets - All helpdesk tickets</h2>
             <div id="ticketData_">
-                <!-- Støttedata vil bli lastet her -->
+                <!-- ticket-data is shown here  -->
             </div>
         </section>
     </main>
-
-    <button id="logoutButton">Log out</button>
+<br><br>
+    <button id="logoutButton">Log out</button> <!-- user can log out of website -->
 </body>
 </html>
