@@ -158,6 +158,57 @@ document.querySelectorAll('.deleteTicketBtn').forEach(btn => {
         }
     });
 });
+
+}
+
+// User Ticket: gets all tickets belonging to user
+async function getUserTicketData_() {
+    const response = await fetch('/api/userTicket/users_');
+    if (!response.ok) {
+        alert('Could not get ticket-data');
+        return;
+    } 
+
+            const data = await response.json();
+        const userTicketSection_ = document.getElementById('userTicketSection_');
+        const userTicketData_ = document.getElementById('userTicketData_');
+        userTicketSection_.style.display = 'block';
+
+        const tRows_ = data.ticket.map(d => `
+            <tr>
+                <td>${d.db_ticket_id}</td>
+                <td>${d.db_title}</td>
+                <td>${d.db_description}</td>
+                <td>${d.db_importance}</td>
+                <td><button class="deleteTicketBtn" data-id="${d.db_ticket_id}">Delete</button></td>
+            </tr>
+        `).join('');
+        userTicketData_.innerHTML = `
+            <table border="1">
+                <thead>
+                    <tr><th>ID</th><th>Title</th><th>Description</th><th>Importance</th><th>Delete</th></tr>
+                </thead>
+                <tbody>${tRows_}</tbody>
+            </table>
+        `;
+// Attach listeners to each delete button
+document.querySelectorAll('.deleteTicketBtn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+        const id = btn.dataset.id;
+        if (!confirm('Delete ticket ' + id + '?')) return;
+        const res = await fetch('/api/deleteTicket_/' + encodeURIComponent(id), {
+            method: 'DELETE'
+        });
+        if (res.ok) {
+            // refresh ticket list after successful delete
+            getTicketData();
+        } else {
+            const text = await res.text();
+            alert('Failed to delete ticket: ' + (text || res.status));
+        }
+    });
+});
 }
 
 getUserData_();
+getUserTicketData_()

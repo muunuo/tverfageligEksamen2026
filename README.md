@@ -138,7 +138,7 @@ The questions asked:
     - ◽ if no role assigned, automaticly become 'General'
     - ◽Let admin assign roles to other users 
 - ⬜ Ticket 
-    - ⚠️ Let user see their own ticket
+    - ✅ Let user see their own ticket
     - ◽ let user edit ticket   
     - ⚠️ let user delete ticket 
 - ⬜ Let support asign tickets to self

@@ -37,14 +37,3 @@ button {
     margin: 0.5rem;
 
 }
-/* 
-#serie {
-    --min-col-size: 300px;
-    background-color: rgb(77, 181, 54);
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: 
-        repeat(auto-fit, minmax(min(var(--min-col-size), 100%), 1fr));
-        
-    margin: 1rem;
-} */

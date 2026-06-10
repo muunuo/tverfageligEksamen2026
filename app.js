@@ -242,6 +242,14 @@ app.get("/api/ticket/users_", requireRole_('3', '1'), async (req, res) => { // b
     res.json({ users: rows});
 });
 
+app.get("/api/userTicket/users_", requireLogin_, async (req, res) => { 
+    const userId_ = req.session.sessionUser_.userId_;
+    const [tRows_] = await pool.execute( 'SELECT db_ticket_id, db_title, db_description, db_importance FROM db_helpticket WHERE db_user_id = ?', 
+        [userId_]);
+    res.json({ ticket: tRows_});
+});
+
+
 
 // Rout to log off 
 app.post("/api/logout_", (req, res) => {
