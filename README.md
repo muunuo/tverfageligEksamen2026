@@ -130,6 +130,8 @@ The questions asked:
     - ❌style.css
     - ✅index.html
 - ✅ Allow tickets to be deleted by admin/support
+- ✅ ticket status
+- ✅ ticket status can be changed by admin/support
 
 ### To Be Implemented 🚧
 

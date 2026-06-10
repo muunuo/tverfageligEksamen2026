@@ -130,13 +130,20 @@ async function getTicketData() {
                 <td>${d.db_title}</td>
                 <td>${d.db_description}</td>
                 <td>${d.db_importance}</td>
+                <td>
+                ${d.db_status}
+                <select data-id="${d.db_ticket_id}" class="statusSelect_">
+                    <option value="open" ${d.db_status.trim().toLowerCase() === 'Open' ? 'selected' : ''}>Open</option>
+                    <option value="closed" ${d.db_status.trim().toLowerCase() === 'Closed' ? 'selected' : ''}>Closed</option>
+                </select>
+                </td>
                 <td><button class="deleteTicketBtn" data-id="${d.db_ticket_id}">Delete</button></td>
             </tr>
         `).join('');
         ticketData_.innerHTML = `
             <table border="1">
                 <thead>
-                    <tr><th>ID</th><th>Title</th><th>Description</th><th>Importance</th><th>Delete</th></tr>
+                    <tr><th>ID</th><th>Title</th><th>Description</th><th>Importance</th><th>Status</th><th>Delete</th></tr>
                 </thead>
                 <tbody>${rows}</tbody>
             </table>
@@ -156,9 +163,26 @@ document.querySelectorAll('.deleteTicketBtn').forEach(btn => {
             const text = await res.text();
             alert('Failed to delete ticket: ' + (text || res.status));
         }
+        
     });
 });
 
+document.querySelectorAll('.statusSelect_').forEach(select => {
+    select.addEventListener('change', async (e) => {
+        const id = select.dataset.id;
+        const res = await fetch('/api/updateTicketStatus_/' + id, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status_: select.value })
+        });
+        if (res.ok) {
+            alert('Status updated!');
+        } else {
+            const text = await res.text();
+            alert('Failed to update status: ' + (text || res.status));
+        }
+    });
+});
 }
 
 // User Ticket: gets all tickets belonging to user
@@ -180,13 +204,14 @@ async function getUserTicketData_() {
                 <td>${d.db_title}</td>
                 <td>${d.db_description}</td>
                 <td>${d.db_importance}</td>
+                <td>${d.db_status}</td>
                 <td><button class="deleteTicketBtn" data-id="${d.db_ticket_id}">Delete</button></td>
             </tr>
         `).join('');
         userTicketData_.innerHTML = `
             <table border="1">
                 <thead>
-                    <tr><th>ID</th><th>Title</th><th>Description</th><th>Importance</th><th>Delete</th></tr>
+                    <tr><th>ID</th><th>Title</th><th>Description</th><th>Importance</th><th>Status</th><th>Delete</th></tr>
                 </thead>
                 <tbody>${tRows_}</tbody>
             </table>

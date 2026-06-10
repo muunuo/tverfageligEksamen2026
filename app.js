@@ -52,6 +52,7 @@ CREATE TABLE IF NOT EXISTS db_helpTicket (
     db_description TEXT,
     db_date TEXT,
     db_importance TEXT,
+    db_status TEXT,
     db_user_id INTEGER,
     FOREIGN KEY (db_user_id) REFERENCES db_user(db_user_id)
 );
@@ -160,11 +161,11 @@ app.post('/login_', async (req, res) => { //users with an account can log in
 app.post('/helpTicket_', async (req, res) => { 
     const {title_, info_, deadline_} = req.body; // retrieves what user puts in html-form 
     const user_id = req.session.sessionUser_.userId_; //gets the id from session
-
+    const status_ = "open";
     try {
         const [statement_] = await pool.execute( //cheking multiple rows, so use []. (Query = get, execute = do)
-        'INSERT INTO db_helpticket (db_title, db_description, db_importance, db_user_id) VALUES (?, ?, ?, ?)', 
-            [title_, info_, deadline_, user_id] // Mariadb uses [varible] insted of run/get to send querys to/from database 
+        'INSERT INTO db_helpticket (db_title, db_description, db_importance, db_status, db_user_id) VALUES (?, ?, ?, ?, ?)', 
+            [title_, info_, deadline_, status_, user_id] // Mariadb uses [varible] insted of run/get to send querys to/from database 
         );
 
         res.status(201).json({ message: "New ticket added", id: statement_.insertId }); //lets user know they where added sucsesfully
@@ -237,18 +238,30 @@ app.get("/api/support/users_", requireRole_('3', '1'), async (req, res) => { // 
 // had to be seperated from support-rout do to only one working at a time
 app.get("/api/ticket/users_", requireRole_('3', '1'), async (req, res) => { // both support and admin have access here
     const [rows] = await pool.execute(
-        'SELECT db_ticket_id, db_title, db_description, db_importance FROM db_helpticket'
+        'SELECT db_ticket_id, db_title, db_description, db_importance, db_status FROM db_helpticket'
     );
     res.json({ users: rows});
 });
 
 app.get("/api/userTicket/users_", requireLogin_, async (req, res) => { 
     const userId_ = req.session.sessionUser_.userId_;
-    const [tRows_] = await pool.execute( 'SELECT db_ticket_id, db_title, db_description, db_importance FROM db_helpticket WHERE db_user_id = ?', 
+    const [tRows_] = await pool.execute( 'SELECT db_ticket_id, db_title, db_description, db_importance, db_status FROM db_helpticket WHERE db_user_id = ?', 
         [userId_]);
     res.json({ ticket: tRows_});
 });
 
+
+app.put('/api/updateTicketStatus_/:id', requireRole_('3', '1'), async (req, res) => {
+    const { status_ } = req.body;
+    const ticketId = req.params.id;
+    try {
+        await pool.execute('UPDATE db_helpticket SET db_status = ? WHERE db_ticket_id = ?', [status_, ticketId]);
+        res.json({ message: "Status updated" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Failed to update status" });
+    }
+});
 
 
 // Rout to log off 
