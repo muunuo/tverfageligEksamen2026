@@ -56,6 +56,17 @@ CREATE TABLE IF NOT EXISTS db_helpTicket (
     db_user_id INTEGER,
     FOREIGN KEY (db_user_id) REFERENCES db_user(db_user_id)
 );
+
+CREATE TABLE IF NOT EXISTS db_klient_task (
+    db_offer_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    db_title TEXT,
+    db_description TEXT,
+    db_date TEXT,
+    db_department TEXT,
+    db_status TEXT,
+    db_user_id INTEGER,
+    FOREIGN KEY (db_user_id) REFERENCES db_user(db_user_id)
+);
 `);
 
 app.use(
@@ -175,6 +186,23 @@ app.post('/helpTicket_', async (req, res) => {
     }
 });
 
+app.post('/klientTask_', async (req, res) => { 
+    const {title_, info_, department_} = req.body; // retrieves what user puts in html-form 
+    const user_id = req.session.sessionUser_.userId_; //gets the id from session
+    const status_ = "unasignd";
+    try {
+        const [statement_] = await pool.execute( //cheking multiple rows, so use []. (Query = get, execute = do)
+        'INSERT INTO db_klient_task (db_title, db_description, db_department, db_status, db_user_id) VALUES (?, ?, ?, ?, ?)', 
+            [title_, info_, department_, status_, user_id] // Mariadb uses [varible] insted of run/get to send querys to/from database 
+        );
+
+        res.status(201).json({ message: "New task added", id: statement_.insertId }); //lets user know they where added sucsesfully
+    } catch (error){ //if an error happens
+        console.log(error);
+        res.status(500).json({message: "There was a problem with adding the task. Please try again."}); //informs user of error
+    }
+});
+
 /*
 -------------------------------
     ROLES 
@@ -278,6 +306,17 @@ app.delete('/api/deleteTicket_/:id', requireLogin_, async (req, res) => {
     } catch (error_) {
         console.error(error_);
         res.status(500).json({ message: "Failed to delete ticket" });
+    }
+});
+
+app.delete('/api/deleteUser_/:id', requireLogin_, async (req, res) => {
+    const target_id_ = req.params.id;
+    try {
+        await pool.execute('DELETE FROM db_user WHERE db_user_id = ?', [target_id_]);
+        res.json({ message: "User deleted" });
+    } catch (error_) {
+        console.error(error_);
+        res.status(500).json({ message: "Failed to delete user" });
     }
 });
 

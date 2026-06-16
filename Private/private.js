@@ -235,5 +235,14 @@ document.querySelectorAll('.deleteTicketBtn').forEach(btn => {
 });
 }
 
+async function deleteUser_(id_) {
+    if (!confirm('Delete this user? This cannot be undone.')) return;
+ 
+    const res_ = await fetch(`/api/deleteUser_/${id_}`, { method: 'DELETE' });
+    const data_ = await res_.json();
+    showMsg_('edit_msg_', data_.message, res_.ok);
+    await loadAllUsers_('admin');
+}
+
 getUserData_();
 getUserTicketData_()

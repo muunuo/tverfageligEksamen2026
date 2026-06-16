@@ -34,6 +34,25 @@
         <!-- all info is sent to database -->
     </form>
 <br><br>
+
+<h1>Ask for Offer</h1>
+<p>Want a offer on a possible joB? Just send the job and we will give you an offer you cant refuse!</p>
+    <form method="POST" action="/klientTask_">
+        <label for="title_">Title</label>
+        <input placeholder="Title" required type="text" name="title_" id="title_">
+        <label for="info_">Describe the problem</label>
+        <input placeholder="Describe the problem you need help with!" required type="text" name="info_" id="info_">
+        <label for="info_">How big of a priority is this?</label>
+        <select name="department_" id="department_">
+            <option value="3">IT Support</option>
+            <option value="4">Development</option>
+            <option value="5">IT Operations</option>
+        </select>
+        <br>
+        <button type="submit">send ticket</button>
+        <!-- all info is sent to database -->
+    </form>
+<br><br>
     <main>
 <br><br>
         <!-- Only support-users can see this -->
@@ -69,5 +88,6 @@
     </main>
 <br><br>
     <button id="logoutButton">Log out</button> <!-- user can log out of website -->
+    
 </body>
 </html>
